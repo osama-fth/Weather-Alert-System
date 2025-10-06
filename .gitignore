@@ -1,4 +1,5 @@
 .DS_Store
-/k8s/
+*/node_modules
 /terraform/
 docker-compose.yaml
+
