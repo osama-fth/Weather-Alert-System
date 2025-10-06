@@ -1,0 +1,68 @@
+services:
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data           # Persistenza dati Redis (volume locale)
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]  # Verifica che Redis risponda
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped        # Riavvia automaticamente il container
+
+  alert-manager:
+    build:
+      context: ./alert-manager     # Costruisce l’immagine dal folder alert-manager
+      dockerfile: dockerfile       # Usa file dockerfile (nome custom)
+    environment:
+      - REDIS_HOST=redis           # Nome del servizio Redis su rete Compose
+      - REDIS_PORT=6379
+      - RETENTION_SECONDS=172800   # Retention 48h
+      - MAX_PER_REGION=300         # Limite elementi per regione
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5001/current-alerts >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      redis:
+        condition: service_healthy # Avvia dopo che Redis è healthy
+    restart: unless-stopped
+
+  weather-fetcher:
+    build:
+      context: ./weather-fetcher
+      dockerfile: dockerfile
+    environment:
+      - ALERT_MANAGER_URL=http://alert-manager:5001/receive-alerts  # URL interno
+    depends_on:
+      alert-manager:
+        condition: service_healthy # Avvia dopo alert-manager
+    restart: unless-stopped
+    
+  dashboard:
+    build:
+      context: ./dashboard         # Costruisce l’immagine dal folder dashboard
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"                # Espone la dashboard all’host su http://localhost:3000
+    environment:
+      - PORT=3000
+      - ALERT_MANAGER_URL=http://alert-manager:5001/current-alerts   # API interne
+      - WEATHER_FETCHER_URL=http://weather-fetcher:5500/weather-alert
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      alert-manager:
+        condition: service_healthy
+      weather-fetcher:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  redis-data:                      # Definizione del volume nominato per Redis

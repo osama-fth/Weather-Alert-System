@@ -4,11 +4,11 @@ metadata:
   name: redis
 spec:
   selector:
-    app: redis
+    app: redis            # Seleziona i Pod con label app=redis
   ports:
-    - port: 6379
-      targetPort: 6379
-  type: ClusterIP
+    - port: 6379          # Porta esposta nel cluster
+      targetPort: 6379    # Porta del container
+  type: ClusterIP         # Solo accesso interno al cluster (nessuna esposizione esterna)
 ---
 apiVersion: v1
 kind: Service
@@ -16,11 +16,11 @@ metadata:
   name: alert-manager
 spec:
   selector:
-    app: alert-manager
+    app: alert-manager    # Seleziona i Pod con label app=alert-manager
   ports:
-    - port: 5001
-      targetPort: 5001
-  type: ClusterIP
+    - port: 5001          # Porta esposta nel cluster
+      targetPort: 5001    # Porta del container (API alert-manager)
+  type: ClusterIP         # Accesso interno (usato da dashboard e weather-fetcher)
 ---
 apiVersion: v1
 kind: Service
@@ -28,11 +28,11 @@ metadata:
   name: weather-fetcher
 spec:
   selector:
-    app: weather-fetcher
+    app: weather-fetcher  # Seleziona i Pod con label app=weather-fetcher
   ports:
-    - port: 5500
-      targetPort: 5500
-  type: ClusterIP
+    - port: 5500          # Porta esposta nel cluster
+      targetPort: 5500    # Porta del container (endpoint /weather-alert)
+  type: ClusterIP         # Accesso interno (usato dalla dashboard)
 ---
 apiVersion: v1
 kind: Service
@@ -40,9 +40,9 @@ metadata:
   name: dashboard
 spec:
   selector:
-    app: dashboard
+    app: dashboard        # Seleziona i Pod con label app=dashboard
   ports:
-    - port: 3000
-      targetPort: 3000
-      nodePort: 30000
-  type: NodePort
+    - port: 3000          # Porta del Service
+      targetPort: 3000    # Porta del container (Express)
+      nodePort: 30000     # Porta del nodo (accessibile da fuori cluster)
+  type: NodePort          # Espone la dashboard all'esterno del cluster (minikube service/tunnel)

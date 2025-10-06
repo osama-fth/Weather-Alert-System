@@ -6,7 +6,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis
+      app: redis            # I Pod gestiti hanno label app=redis
   template:
     metadata:
       labels:
@@ -16,7 +16,7 @@ spec:
         - name: redis
           image: redis:7-alpine
           ports:
-            - containerPort: 6379
+            - containerPort: 6379  # Espone Redis nel Pod (usato dal Service)
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,15 +34,15 @@ spec:
     spec:
       containers:
         - name: alert-manager
-          image: alert-manager:latest
-          imagePullPolicy: Never
+          image: alert-manager:latest   # Immagine locale (caricata in Minikube)
+          imagePullPolicy: Never        # Non pullare dal registry (usa l'immagine locale)
           ports:
-            - containerPort: 5001
+            - containerPort: 5001       # Porta HTTP dell'API
           env:
             - name: REDIS_HOST
-              value: "redis"
+              value: "redis"            # Nome del Service Redis (DNS interno)
             - name: REDIS_PORT
-              value: "6379"
+              value: "6379"             # Porta del Service Redis
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,12 +61,12 @@ spec:
       containers:
         - name: weather-fetcher
           image: weather-fetcher:latest
-          imagePullPolicy: Never
+          imagePullPolicy: Never        # Usa immagine locale
           ports:
-            - containerPort: 5500
+            - containerPort: 5500       # Porta Flask
           env:
             - name: ALERT_MANAGER_URL
-              value: "http://alert-manager:5001/receive-alerts"
+              value: "http://alert-manager:5001/receive-alerts"  # URL interno verso alert-manager
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -85,6 +85,6 @@ spec:
       containers:
         - name: dashboard
           image: dashboard:latest
-          imagePullPolicy: Never
+          imagePullPolicy: Never        # Usa immagine locale
           ports:
-            - containerPort: 3000
+            - containerPort: 3000       # Porta Express

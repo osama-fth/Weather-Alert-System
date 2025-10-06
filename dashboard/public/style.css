@@ -1,5 +1,5 @@
 body {
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
 }
 
 .sticky-actions {
@@ -20,6 +20,15 @@ pre.json {
     overflow: auto;
 }
 
+pre {
+    max-height: 40vh;
+    overflow: auto;
+}
+
 .badge-level {
     text-transform: uppercase;
+}
+
+.card .badge {
+    font-weight: 600;
 }
