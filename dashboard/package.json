@@ -1,0 +1,12 @@
+{
+  "name": "weather-dashboard-express",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Semplice dashboard HTML servita da Express",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

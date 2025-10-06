@@ -1,0 +1,25 @@
+body {
+    padding-bottom: 3rem;
+}
+
+.sticky-actions {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bs-body-bg);
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+pre.json {
+    background: var(--bs-secondary-bg);
+    padding: 1rem;
+    border-radius: .5rem;
+    max-height: 40vh;
+    overflow: auto;
+}
+
+.badge-level {
+    text-transform: uppercase;
+}

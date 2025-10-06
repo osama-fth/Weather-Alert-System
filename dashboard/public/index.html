@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it" data-bs-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Weather Alerts • Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom mb-3">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="#">Weather Alerts</a>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <span class="text-body-secondary small">Agg. <span id="last-updated">—</span></span>
+        <button id="refresh-btn" class="btn btn-sm btn-outline-primary">Aggiorna</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sticky-actions">
+    <div class="container">
+      <div class="row g-2 align-items-end">
+        <div class="col-sm-6 col-md-5">
+          <label for="region-select" class="form-label mb-1">Regione</label>
+          <select id="region-select" class="form-select"></select>
+        </div>
+        <div class="col-sm-3 col-md-2">
+          <label for="interval-select" class="form-label mb-1">Auto-refresh</label>
+          <select id="interval-select" class="form-select">
+            <option value="0">Off</option>
+            <option value="5000">5s</option>
+            <option value="10000">10s</option>
+            <option value="30000">30s</option>
+            <option value="60000">60s</option>
+          </select>
+        </div>
+        <div class="col-sm-3 col-md-2">
+          <button id="clear-btn" class="btn btn-outline-secondary w-100">Pulisci</button>
+        </div>
+        <div class="col-sm-12 col-md-3 text-md-end">
+          <div id="status" class="small text-body-secondary">Pronto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container mt-3">
+    <div id="alerts" class="row g-3"></div>
+
+    <div id="empty" class="text-center text-body-secondary my-5" style="display:none">
+      <div class="display-6">Nessun alert</div>
+      <p class="mt-2">Non sono presenti segnalazioni per la regione selezionata.</p>
+    </div>
+
+    <section class="mt-4">
+      <details>
+        <summary class="text-body-secondary">Raw JSON</summary>
+        <pre id="raw" class="json mt-2">[]</pre>
+      </details>
+    </section>
+  </main>
+
+
+  <script src="script.js"></script>
+  <!-- Bootstrap JS (opzionale per componenti interattivi) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <!-- Bootstrap Icons (opzionale) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</body>
+
+</html>

@@ -1,5 +1,4 @@
 .DS_Store
-/dashboard/
 /k8s/
 /terraform/
 docker-compose.yaml

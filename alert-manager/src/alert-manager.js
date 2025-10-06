@@ -34,14 +34,24 @@ app.post("/receive-alerts", async (req, res) => {
     res.json({ status: "ok", total_alerts_received: count });
 });
 
-// Restituisce alert attivi
+// Restituisce alert attivi (filtrabile per regione)
 app.get("/current-alerts", async (req, res) => {
-    const keys = await redis.keys("alert:*");
+    const region = (req.query.region || "").toString().trim();
+    const pattern = region ? `alert:${region}:*` : "alert:*";
+
     const alerts = [];
-    for (const key of keys) {
-        const val = await redis.get(key);
-        alerts.push(JSON.parse(val));
-    }
+    let cursor = "0";
+    do {
+        const [next, keys] = await redis.scan(cursor, "MATCH", pattern, "COUNT", 200);
+        cursor = next;
+        if (keys.length) {
+            const values = await redis.mget(keys);
+            for (const v of values) {
+                if (v) alerts.push(JSON.parse(v));
+            }
+        }
+    } while (cursor !== "0");
+
     res.json({ active_alerts: alerts });
 });
 
